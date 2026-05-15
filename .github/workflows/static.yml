@@ -1,0 +1,582 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Center</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      background:linear-gradient(
+        -45deg,
+        #0f172a,
+        #1e3a8a,
+        #312e81,
+        #0f766e,
+        #111827
+      );
+
+      background-size:400% 400%;
+      animation:gradientBG 15s ease infinite;
+
+      color:white;
+      overflow-x:hidden;
+
+      padding-top:190px;
+    }
+
+    @keyframes gradientBG{
+
+      0%{
+        background-position:0% 50%;
+      }
+
+      50%{
+        background-position:100% 50%;
+      }
+
+      100%{
+        background-position:0% 50%;
+      }
+
+    }
+
+    header{
+      background:rgba(0,0,0,0.7);
+      backdrop-filter:blur(10px);
+      padding:20px;
+      text-align:center;
+      border-bottom:3px solid #3b82f6;
+
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+
+      z-index:1000;
+    }
+
+    header h1{
+      font-size:2.8rem;
+      color:#60a5fa;
+      text-shadow:0 0 15px #3b82f6;
+    }
+
+    nav{
+      margin-top:12px;
+    }
+
+    nav a{
+      color:white;
+      text-decoration:none;
+      margin:0 15px;
+      font-weight:bold;
+      transition:0.3s;
+    }
+
+    nav a:hover{
+      color:#60a5fa;
+    }
+
+    .search-container{
+      margin-top:20px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .search-container input{
+      padding:12px;
+      width:300px;
+      border:none;
+      border-radius:10px;
+      outline:none;
+      font-size:1rem;
+    }
+
+    .search-container button{
+      padding:12px 18px;
+      border:none;
+      border-radius:10px;
+      background:#3b82f6;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .search-container button:hover{
+      background:#2563eb;
+    }
+
+    .hero{
+      text-align:center;
+      padding:70px 20px;
+      background:linear-gradient(to right,#2563eb,#7c3aed);
+    }
+
+    .hero h2{
+      font-size:3rem;
+      margin-bottom:15px;
+    }
+
+    .hero p{
+      font-size:1.2rem;
+    }
+
+    #searchFrame{
+      width:95%;
+      height:700px;
+      border:none;
+      border-radius:12px;
+      margin:20px auto;
+      display:block;
+      background:white;
+    }
+
+    .games{
+      padding:40px 20px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:rgba(31,41,55,0.85);
+      border-radius:15px;
+      overflow:hidden;
+      transition:0.3s;
+      box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+    }
+
+    .card-content{
+      padding:15px;
+    }
+
+    .card-content h3{
+      color:#60a5fa;
+      margin-bottom:10px;
+    }
+
+    .card-content p{
+      margin-bottom:15px;
+    }
+
+    .btn{
+      display:inline-block;
+      background:#3b82f6;
+      color:white;
+      padding:10px 15px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      margin-bottom:10px;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      background:#2563eb;
+    }
+
+    .fullscreen-btn{
+      background:#14b8a6;
+      margin-left:5px;
+    }
+
+    .fullscreen-btn:hover{
+      background:#0f9f92;
+    }
+
+    .game-frame{
+      width:100%;
+      height:500px;
+      border:none;
+      border-radius:12px;
+      margin-top:10px;
+      background:black;
+    }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background:#111827;
+      margin-top:30px;
+      border-top:3px solid #3b82f6;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header>
+
+    <h1>Study Center</h1>
+
+    <nav>
+      <a href="#">Home</a>
+      <a href="#games">Games</a>
+      <a href="#searchFrame">Search</a>
+    </nav>
+
+    <div class="search-container">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search DuckDuckGo..."
+      >
+
+      <button onclick="searchDuckDuckGo()">
+        Search
+      </button>
+
+    </div>
+
+  </header>
+
+  <section class="hero">
+
+    <h2>Welcome to Study Center</h2>
+
+    <p>
+      Play games directly from your browser.
+    </p>
+
+  </section>
+
+  <!-- SEARCH -->
+
+  <iframe id="searchFrame"></iframe>
+
+  <!-- GAMES -->
+
+  <section class="games" id="games">
+
+    <!-- GAME 1 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>Granny</h3>
+
+        <p>Horror survival game.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://granny-games.com/',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GAME 2 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>Geometry Lite</h3>
+
+        <p>Jump through obstacles.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://geometrylitepc.io/',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GAME 3 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>Retro Bowl</h3>
+
+        <p>Football arcade game.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://retrobowl.me/',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GAME 4 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>Skyriders</h3>
+
+        <p>Sky racing game.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://racinglimits.io/sky-riders#google_vignette',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GAME 5 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>Granny 2</h3>
+
+        <p>Escape the haunted house.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://granny2.io/granny-2',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GAME 6 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>5 Nights at Epsteins</h3>
+
+        <p>Horror survival challenge.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://5nightsatepsteins.io/',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+    <!-- GAME 7 -->
+    <div class="card">
+      <div class="card-content">
+
+        <h3>Football Legends 2021</h3>
+
+        <p>Soccer arcade game.</p>
+
+        <button class="btn"
+          onclick="loadGame(
+          'https://html5.gamedistribution.com/ecd138ae69cf4e92b5f5cdd328b6b62e/?gd_sdk_referrer_url=https://fun.symbaloo.com/',
+          this
+          )">
+
+          Play Now
+
+        </button>
+
+        <iframe class="game-frame"></iframe>
+
+        <button class="btn fullscreen-btn"
+          onclick="fullscreenGame(this)">
+
+          Fullscreen
+
+        </button>
+
+      </div>
+    </div>
+
+  </section>
+
+  <footer>
+
+    <p>
+      Created by nckaii
+    </p>
+
+  </footer>
+
+  <script>
+
+    function loadGame(url, button){
+
+      const card =
+        button.parentElement;
+
+      const frame =
+        card.querySelector('.game-frame');
+
+      frame.src = url;
+
+    }
+
+    function fullscreenGame(button){
+
+      const frame =
+        button.parentElement
+        .querySelector('.game-frame');
+
+      if(frame.requestFullscreen){
+
+        frame.requestFullscreen();
+
+      }
+
+    }
+
+    function searchDuckDuckGo(){
+
+      const query =
+        document.getElementById(
+          'searchInput'
+        ).value;
+
+      const frame =
+        document.getElementById(
+          'searchFrame'
+        );
+
+      frame.src =
+        'https://duckduckgo.com/?q='
+        + encodeURIComponent(query);
+
+    }
+
+  </script>
+
+</body>
+</html>
